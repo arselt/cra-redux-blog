@@ -1,62 +1,45 @@
 import React, { Component } from "react";
-import axios from 'axios';
+import Spinner from "../general/Spinner";
+import Fatal from "../general/Fatal";
+
+import { connect } from 'react-redux';
+
+import * as usersActions from '../../actions/usersActions';
+import Table from "./Table";
 
 class Users extends Component {
 
-  constructor() {
-    super();
-    this.state = {
-      usuarios: []
+  componentDidMount() {
+    this.props.bringAll();
+  }
+
+  loadContent = () => {
+    if (this.props.loading) {
+      return <Spinner />;
     }
-  }
 
-  async componentDidMount() {
-    const respuesta = await axios.get('https://jsonplaceholder.typicode.com/users');
-    this.setState({
-      usuarios: respuesta.data
-    })
-  }
+    if (this.props.error) {
+      return <Fatal message={ this.props.error }/>;
+    }
 
-  makeTreads = () => (
-    this.state.usuarios.map((usuario) => (
-      <tr key={ usuario.id }>
-        <td>
-          { usuario.name }
-        </td>
-        <td>
-          { usuario.email }
-        </td>
-        <td>
-          { usuario.website }
-        </td>
-      </tr>
-    ))
-  );
+    return(
+      <Table />
+    )
+  };
 
   render() {
+    console.log(this.props.loading || this.props.error)
     return(
       <div>
-        <table className="table">
-        <thead>
-          <tr>
-            <th>
-              Nombre
-            </th>
-            <th>
-              Correo
-            </th>
-            <th>
-              Enlace
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          { this.makeTreads() }
-        </tbody>
-      </table>
+        <h1> Users </h1>
+        { this.loadContent() }
       </div>
     );
   }
 }
 
-export default Users;
+const mapStateToProps = (reducers) => {
+  return reducers.usersReducer;
+}
+
+export default connect(mapStateToProps, usersActions)(Users);
