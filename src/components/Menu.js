@@ -4,10 +4,10 @@ import { Link } from "react-router-dom";
 const Menu = (props) => (
     <nav id="menu">
         <Link to='/'>
-            Usuarios
+            Users
         </Link>
-        <Link to='/tareas'>
-            Tareas
+        <Link to='/entries/:key'>
+            Entries
         </Link>
     </nav>
 )

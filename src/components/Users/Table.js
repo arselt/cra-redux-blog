@@ -1,9 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
 const Table = (props) => {
     const makeTreads = () => (
-        props.users.map((user) => (
+        props.users.map((user, key) => (
           <tr key={ user.id }>
             <td>
               { user.name }
@@ -13,6 +14,11 @@ const Table = (props) => {
             </td>
             <td>
               { user.website }
+            </td>
+            <td>
+              <Link to={`/entries/${key}`}>
+                <div className="eye-solid icon"></div>
+              </Link>
             </td>
           </tr>
         ))

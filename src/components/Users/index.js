@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import Spinner from "../general/Spinner";
-import Fatal from "../general/Fatal";
+import Spinner from "../General/Spinner";
+import Fatal from "../General/Fatal";
 
 import { connect } from 'react-redux';
 
@@ -10,7 +10,9 @@ import Table from "./Table";
 class Users extends Component {
 
   componentDidMount() {
-    this.props.bringAll();
+    if (!this.props.users.length){
+      this.props.bringAll();
+    }
   }
 
   loadContent = () => {
@@ -28,7 +30,6 @@ class Users extends Component {
   };
 
   render() {
-    console.log(this.props.loading || this.props.error)
     return(
       <div>
         <h1> Users </h1>
