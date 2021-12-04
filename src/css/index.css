@@ -33,3 +33,7 @@ body {
 .entry_title {
   border-bottom: 1px solid black;
 }
+
+li {
+  margin: 15px 0;
+}

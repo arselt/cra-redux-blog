@@ -7,8 +7,14 @@ import * as entriesActions from '../../actions/entriesActions'
 import Spinner from '../General/Spinner';
 import Fatal from '../General/Fatal';
 
+import Comments from './Comments';
+
 const { bringAll: usersBringAll } = usersActions;
-const { bringByUser: entriesBringByUser } = entriesActions;
+const {
+		bringByUser: entriesBringByUser,
+		openClose,
+		bringComments
+	} = entriesActions;
 
 class Entries extends Component {
 
@@ -76,11 +82,21 @@ class Entries extends Component {
 		if (!('entries_key' in users[key])) return;
 
 		const { entries_key } = users[key];
-		return entries[entries_key].map((entry) => (
+		
+		return this.showInfo(
+			entries[entries_key],
+			entries_key
+		);
+	};
+
+	showInfo = (entries, entry_key) => (
+		entries.map((entry, comment_key) => (
 			<div 
 				className='entry_title'
 				key={ entry.id }
-				onClick={ () => alert(entry.id) }
+				onClick={
+					() => this.showComments(entry_key, comment_key, entry.comments)
+				}
 			>
 				<h2>
 					{ entry.title }
@@ -88,8 +104,18 @@ class Entries extends Component {
 				<p>
 					{ entry.body }
 				</p>
+				{
+					(entry.opened) ? <Comments comments={ entry.comments } />: 'Comments'
+				}
 			</div>
-		));
+		))
+	);
+
+	showComments = (entry_key, comment_key, comments) => {
+		this.props.openClose(entry_key, comment_key)
+		if(!comments.lenght) {
+			this.props.bringComments(entry_key, comment_key)
+		}
 	};
 
 	render() {
@@ -112,7 +138,9 @@ const mapStateToProps = ({ usersReducer, entriesReducer }) => {
 
 const mapDispatchToProps = {
 	usersBringAll,
-	entriesBringByUser
+	entriesBringByUser,
+	openClose,
+	bringComments
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Entries);

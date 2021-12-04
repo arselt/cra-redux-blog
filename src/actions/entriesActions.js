@@ -1,5 +1,12 @@
 import Axios from "axios";
-import { BRING_BY_USER, LOADING, ERROR} from "../types/entriesTypes";
+import { 
+    UPDATE,
+    LOADING,
+    ERROR,
+    COMMENT_UPDATE,
+    COMMENT_LOADING,
+    COMMENT_ERROR
+} from "../types/entriesTypes";
 import * as usersTypes from "../types/usersTypes";
 
 const { BRING_ALL: USERS_BRING_ALL } = usersTypes;
@@ -17,13 +24,19 @@ export const bringByUser = (key) => async(dispatch, getState) => {
     try {
         const response = await Axios.get(`https://jsonplaceholder.typicode.com/posts?userId=${user_id}`);
 
+        const news = response.data.map((entry) => ({
+        ...entry, 
+            comments: [],
+            open: false
+        }));
+
         const updated_entries = [
             ...entries,
-            response.data
+            news
         ];
 
         dispatch({
-            type: BRING_BY_USER,
+            type: UPDATE,
             payload: updated_entries
         });
         
@@ -44,6 +57,62 @@ export const bringByUser = (key) => async(dispatch, getState) => {
         dispatch({
             type: ERROR,
             payload: 'Entries not available'
+        })
+    }
+}
+
+export const openClose = (entry_key, comment_key) => (dispatch, getState) => {
+    const { entries } = getState().entriesReducer;
+    const selected = entries[entry_key][comment_key];
+
+    const updated = {
+        ...selected,
+        opened: !selected.opened
+    };
+
+    const updated_entries = [...entries];
+    updated_entries[entry_key] = [
+        ...entries[entry_key]
+    ];
+    updated_entries[entry_key][comment_key] = updated;
+
+    dispatch({
+        type: UPDATE,
+        payload: updated_entries
+    });
+}
+
+export const bringComments = (entry_key, comment_key) => async (dispatch, getState) => {
+    dispatch({
+        type: COMMENT_LOADING
+    })
+
+    const { entries } = getState().entriesReducer;
+    const selected = entries[entry_key][comment_key];
+
+    try {
+        const response = await Axios.get(`https://jsonplaceholder.typicode.com/comments?postId=${selected.id}`)
+
+        const updated = {
+            ...selected,
+            comments: response.data
+        }
+
+        const updated_entries = [...entries];
+        updated_entries[entry_key] = [
+            ...entries[entry_key]
+        ];
+        updated_entries[entry_key][comment_key] = updated;
+
+        dispatch({
+            type: COMMENT_UPDATE,
+            payload: updated_entries
+        });
+    } catch (error) {
+        console.log(error.message)
+        dispatch ({
+            type: COMMENT_ERROR,
+            payload: 'Comments not available'
         })
     }
 }
