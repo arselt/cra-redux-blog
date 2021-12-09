@@ -37,3 +37,9 @@ body {
 li {
   margin: 15px 0;
 }
+
+.todos_container {
+  font-size: 20px;
+  margin-left: 50px;
+  margin-bottom: 70px;
+}

@@ -6,8 +6,8 @@ const Menu = (props) => (
         <Link to='/'>
             Users
         </Link>
-        <Link to='/tasks'>
-            Entries
+        <Link to='/todos'>
+            To Do's
         </Link>
     </nav>
 )

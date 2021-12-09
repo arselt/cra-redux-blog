@@ -53,7 +53,6 @@ export const bringByUser = (key) => async(dispatch, getState) => {
         });
     } 
     catch(error) {
-        console.log(error.message);
         dispatch({
             type: ERROR,
             payload: 'Entries not available'
@@ -109,7 +108,6 @@ export const bringComments = (entry_key, comment_key) => async (dispatch, getSta
             payload: updated_entries
         });
     } catch (error) {
-        console.log(error.message)
         dispatch ({
             type: COMMENT_ERROR,
             payload: 'Comments not available'
